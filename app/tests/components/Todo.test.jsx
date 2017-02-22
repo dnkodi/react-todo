@@ -11,7 +11,7 @@ describe('Todo', () => {
   });
 
   it('should call onToggle with proper id', () =>{
-    var todoData= {
+    var todoData = {
       id:199,
       text: 'dummy data',
       completed: false
