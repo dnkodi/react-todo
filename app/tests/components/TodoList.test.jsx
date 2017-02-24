@@ -1,11 +1,16 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
+var {Provider} = require('react-redux');
 var TestUtils = require('react-addons-test-utils');
 var expect = require('expect');
 var $ = require('jquery');
 
-var TodoList = require('TodoList');
-var Todo = require('Todo');
+import {configure} from 'configureStore'
+
+// var TodoList = require('TodoList');
+import ConnectedTodoList, {TodoList} from 'TodoList'
+import ConnectedTodo, {Todo} from 'Todo'
+
 
 describe('TodoList', () => {
   it('should exist', () => {
@@ -13,10 +18,34 @@ describe('TodoList', () => {
   });
 
   it('should render one Todo component for each todo item', () =>{
-    var todos = [{id:1, text:'do something'},{id:2, text:'do this'}];
+    var todos = [
+      {
+        id:1,
+        text:'do something',
+        createdAt: 125,
+        completed: false,
+        completedAt: undefined
+      },
+      {
+        id:2,
+        text:'do this',
+        createdAt: 125,
+        completed: false,
+        completedAt: undefined
+      }
+    ];
 
-    var todolist = TestUtils.renderIntoDocument(<TodoList todos={todos}/>);
-    var todosComponents = TestUtils.scryRenderedComponentsWithType(todolist, Todo);
+    var store = configure({
+      todos: todos
+    });
+
+    var provider = TestUtils.renderIntoDocument(
+      <Provider store={store}>
+        <ConnectedTodoList/>
+      </Provider>
+    )
+    var todoList = TestUtils.scryRenderedComponentsWithType(provider, ConnectedTodoList)[0];//access first eleent of the array since we know we only create one instance of the component
+    var todosComponents = TestUtils.scryRenderedComponentsWithType(todoList, ConnectedTodo);
 
     expect(todosComponents.length).toBe(todos.length);
 
