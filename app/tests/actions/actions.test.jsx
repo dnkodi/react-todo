@@ -1,5 +1,10 @@
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 var expect = require('expect');
+
 var actions = require('actions');
+
+var createMockStore = configureMockStore([thunk]);
 
 describe('Actions', () => {
   it('should generate setsearchtext action', () => {
@@ -27,10 +32,38 @@ describe('Actions', () => {
   it('should generate add todo action', () => {
     var action = {
       type: 'ADD_TODO',
-      text: 'Some text'
+      todo: {
+        id: '1231',
+        text: 'something',
+        completed: false,
+        createdAt: 0
+      }
     };
-    var res = actions.addTodo(action.text);
+    var res = actions.addTodo(action.todo);
     expect(res).toEqual(action);
+  });
+
+  it('should create add todo and dipatch ADD_TODO', (done) => {
+    //creating an instance of our mockStore
+    const store = createMockStore({});
+    const todoText = 'Anything';
+
+    store.dispatch(actions.startAddTodo(todoText)).then(() =>{
+      //getActions will return an array with all of the actions were fired on our mockstore
+      const actions = store.getActions();
+      //toInclude is similar to toEqual as long as the given property
+      //(even other differnt propeties exist in the actions it doesnt matter) exist the test will pass
+      expect(actions[0]).toInclude({
+        type: 'ADD_TODO'
+        });
+
+      expect(actions[0].todo).toInclude({
+        text: todoText
+      });
+      //call done is necessary to finish the test.
+      done();
+    }).catch(done);//done will wrap test up and it will call done with the error object
+
   });
 
   it('should generate add todos action object', () => {
@@ -51,14 +84,31 @@ describe('Actions', () => {
     expect(res).toEqual(action);
   });
 
-  it('should generate toggleTodo action', () => {
+  it('should generate updateTodo action', () => {
     var action = {
-      type: 'TOGGLE_TODO',
-      id: 1
-    }
+      type: 'UPDATE_TODO',
+      id: 1,
+      updates: {completed: false}
+    };
 
-    var res = actions.toggleTodo(action.id);
+    var res = actions.updateTodo(action.id, action.updates);
 
     expect(res).toEqual(action);
+  });
+
+  describe('Test with firebase todos', () => {
+    //will store the refernce to todos, its accesible everywhere inside the describe block
+    var testTodoRef;
+    //handler inside mocha gets fired before every test case
+    beforeEach((done)=>{
+
+    });
+    afterEach((done)=>{
+
+    });
+
+    it('should toggle todo and dipatch UPDATE_TODO action', ()=> {
+      
+    })
   });
 });

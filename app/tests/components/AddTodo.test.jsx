@@ -5,6 +5,8 @@ var expect = require('expect');
 var $ = require('jquery');
 var {AddTodo} = require('AddTodo');
 
+import * as actions from 'actions';
+
 describe('AddTodo', () => {
   it('should exist', () => {
     expect(AddTodo).toExist();
@@ -12,10 +14,7 @@ describe('AddTodo', () => {
 
   it('should dispatch ADD_TODO when valid todo text', () => {
     var todoText = "do something";
-    var action = {
-      type: 'ADD_TODO',
-      text: todoText
-    }
+    var action = actions.startAddTodo(todoText);
     var spy = expect.createSpy();
     var addtodo = TestUtils.renderIntoDocument(<AddTodo dispatch={spy}/>);
 
